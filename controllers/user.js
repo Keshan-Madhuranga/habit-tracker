@@ -7,6 +7,7 @@ const AccountDeletionRequest = require('../models/account_deletion_request');
 const PredefinedHabit = require('../models/predefined_habit');
 const UserHabit = require('../models/user_habit');
 const Admin = require('../models/admin');
+const HelpCenterQuestion = require('../models/help_center_question');
 
 const signup = async (req, res) => {
   const {
@@ -189,6 +190,35 @@ const sendAccountDeletionRequest = async (req, res) => {
   }
 };
 
+const getUserDetails = async (req, res) => {
+  const { user_id } = req.user;
+
+  try {
+    const userDetails = await User.findById(user_id);
+    if (!userDetails) {
+      return res.status(400).json({
+        status_code: 400,
+        message: 'error',
+        error: 'No user found',
+      });
+    }
+
+    const { password, ...filteredData } = userDetails._doc;
+
+    return res.status(200).json({
+      status_code: 200,
+      message: 'success',
+      data: filteredData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status_code: 500,
+      message: 'error',
+      error: error.message,
+    });
+  }
+};
+
 const getAccountDeletionRequests = async (req, res) => {
   const { user_type } = req.user;
 
@@ -245,6 +275,55 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const contactHelp = async (req, res) => {
+  const { email, question, name } = req.body;
+
+  try {
+    const questionDetails = await HelpCenterQuestion.create({
+      name,
+      email,
+      question
+    });
+    return res.status(200).json({
+      status_code: 200,
+      message: 'success',
+      data: questionDetails,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status_code: 500,
+      message: 'error',
+      error: error.message,
+    });
+  }
+};
+
+const getHelpCenterQuestions = async (req, res) => {
+  const { user_type } = req.user;
+
+  try {
+    if (user_type !== 'admin') {
+      return res.status(400).json({
+        status_code: 400,
+        message: 'error',
+        error: 'You do not have permission for this',
+      });
+    }
+    const questions = await HelpCenterQuestion.find();
+    return res.status(200).json({
+      status_code: 200,
+      message: 'success',
+      data: questions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status_code: 500,
+      message: 'error',
+      error: error.message,
+    });
+  }
+};
+
 const signupSchema = {
   body: Joi.object({
     email: Joi.string().required(),
@@ -286,6 +365,14 @@ const deleteAccountSchema = {
   })
 };
 
+const contactHelpSchema = {
+  body: Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().required(),
+    question: Joi.string().required(),
+  })
+};
+
 module.exports = {
   handlers: {
     signup,
@@ -294,12 +381,16 @@ module.exports = {
     sendAccountDeletionRequest,
     getAccountDeletionRequests,
     deleteAccount,
+    getUserDetails,
+    contactHelp,
+    getHelpCenterQuestions
   },
   validationSchemas: {
     signupSchema,
     loginSchema,
     editUserProfileSchema,
     sendAccountDeletionRequestSchema,
-    deleteAccountSchema
+    deleteAccountSchema,
+    contactHelpSchema
   }
 };

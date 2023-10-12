@@ -18,9 +18,14 @@ router.post(
 );
 router.patch(
   '/profile',
-  validator(userController.validationSchemas.editUserProfileSchema),
   authenticator,
+  validator(userController.validationSchemas.editUserProfileSchema),
   userController.handlers.editUserProfile
+);
+router.get(
+  '/profile',
+  authenticator,
+  userController.handlers.getUserDetails
 );
 router.post(
   '/profile/delete-request',
@@ -38,6 +43,18 @@ router.delete(
   authenticator,
   validator(userController.validationSchemas.deleteAccountSchema),
   userController.handlers.deleteAccount
+);
+
+router.post(
+  '/help-center',
+  validator(userController.validationSchemas.contactHelpSchema),
+  userController.handlers.contactHelp
+);
+
+router.get(
+  '/help-center',
+  authenticator,
+  userController.handlers.getHelpCenterQuestions
 );
 
 module.exports = router;

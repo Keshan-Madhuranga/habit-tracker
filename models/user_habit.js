@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const uniqueValidator = require("mongoose-unique-validator");
 
 const userHabitSchema = mongoose.Schema({
   user_id: {
@@ -19,7 +18,5 @@ const userHabitSchema = mongoose.Schema({
     default: null,
   },
 });
-
-// userSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('User_Habit', userHabitSchema);

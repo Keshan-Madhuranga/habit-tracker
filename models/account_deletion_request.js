@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const uniqueValidator = require("mongoose-unique-validator");
 
 const accountDeletionRequestSchema = mongoose.Schema({
   email: {
@@ -19,7 +18,5 @@ const accountDeletionRequestSchema = mongoose.Schema({
     default: null
   }
 });
-
-// userSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Account_Deletion_Request', accountDeletionRequestSchema);
