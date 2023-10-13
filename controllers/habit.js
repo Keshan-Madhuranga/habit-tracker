@@ -422,6 +422,39 @@ const deletePredefinedHabit = async (req, res) => {
   }
 };
 
+const getPredefinedHabit = async (req, res) => {
+  const { user_type } = req.user;
+
+  try {
+    if (user_type !== 'admin') {
+      return res.status(400).json({
+        status_code: 400,
+        message: 'error',
+        error: 'You do not have permission for this',
+      });
+    }
+    const habitDetails = await PredefinedHabit.find();
+    if (!habitDetails) {
+      return res.status(400).json({
+        status_code: 400,
+        message: 'error',
+        error: 'Habits does not exists',
+      });
+    }
+    return res.status(200).json({
+      status_code: 200,
+      message: 'Success',
+      result: habitDetails,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status_code: 500,
+      message: 'error',
+      error: error.message,
+    });
+  }
+};
+
 const createHabitSchema = {
   body: Joi.object({
     description: Joi.string().allow(''),
@@ -504,7 +537,8 @@ module.exports = {
     getHabitProgressOfDay,
     createPredefinedHabits,
     editPredefinedHabits,
-    deletePredefinedHabit
+    deletePredefinedHabit,
+    getPredefinedHabit
   },
   validationSchemas: {
     createHabitSchema,

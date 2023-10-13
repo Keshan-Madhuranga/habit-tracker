@@ -61,5 +61,10 @@ router.delete(
   validator(habitController.validationSchemas.deletePredefinedHabitsSchema),
   habitController.handlers.deletePredefinedHabit
 );
+router.get(
+  '/predefined-habit',
+  authenticator,
+  habitController.handlers.getPredefinedHabit
+);
 
 module.exports = router;
