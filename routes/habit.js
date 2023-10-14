@@ -13,12 +13,6 @@ router.post(
   habitController.handlers.createHabit
 );
 router.get('/', authenticator, habitController.handlers.getListOfUserHabits);
-router.get(
-  '/:habit_id',
-  authenticator,
-  validator(habitController.validationSchemas.getUserHabitByIdSchema),
-  habitController.handlers.getUserHabitById
-);
 router.patch(
   '/:habit_id',
   authenticator,
@@ -65,6 +59,12 @@ router.get(
   '/predefined-habit',
   authenticator,
   habitController.handlers.getPredefinedHabit
+);
+router.get(
+  '/:habit_id',
+  authenticator,
+  validator(habitController.validationSchemas.getUserHabitByIdSchema),
+  habitController.handlers.getUserHabitById
 );
 
 module.exports = router;
