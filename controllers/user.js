@@ -78,7 +78,7 @@ const login = async (req, res) => {
         error: 'Auth failed',
       });
     }
-    const hashedPassword = bcrypt.compare(password, userDetails.password);
+    const hashedPassword = await bcrypt.compare(password, userDetails.password);
 
     if (!hashedPassword) {
       return res.status(400).json({
